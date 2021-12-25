@@ -9,6 +9,8 @@ jobs:
     # name 명령 이름
     # run 명령 
     - uses: actions/checkout@v2
+    - name: 파일 조회
+      run: ls -al
     - name: hello world 출력
       run: echo hello world
     - name: python 버전 출력

@@ -24,4 +24,4 @@ jobs:
     - name: 설치된 패키지 확인
       run: pip list
     - name: python 파일 실행
-      run: python 'sample_ridi.py'
+      run: python './src/youtube.py'

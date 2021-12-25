@@ -35,9 +35,10 @@ class ChannelAbout:
         for i in target:
             try:
                 int(i)
-                result += i
             except:
                 pass
+            else:
+                result += i
             
         view = int(result)
         return view

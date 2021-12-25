@@ -1,0 +1,14 @@
+name: hello world
+ 
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # name 명령 이름
+    # run 명령 
+    - name: hello world 출력
+      run: echo hello world
+    - name: python 버전 출력
+      run: python -V

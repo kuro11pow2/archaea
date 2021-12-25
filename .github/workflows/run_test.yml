@@ -17,5 +17,11 @@ jobs:
       run: echo hello world
     - name: python 버전 출력
       run: python -V
+    - name: pip 업그레이드
+      run: python -m pip install --upgrade pip
+    - name: requirements 설치
+      run: pip install -r requirements.txt
+    - name: 설치된 패키지 확인
+      run: pip list
     - name: python 파일 실행
-      run: python 'hello_world.py'
+      run: python 'sample_ridi.py'

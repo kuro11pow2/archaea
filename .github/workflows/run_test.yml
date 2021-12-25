@@ -9,7 +9,9 @@ jobs:
     # name 명령 이름
     # run 명령 
     - uses: actions/checkout@v2
-    - name: 파일 조회
+    - name: workspace 출력
+      run: echo $GITHUB_WORKSPACE
+    - name: 현재 디렉터리 조회
       run: ls -al
     - name: hello world 출력
       run: echo hello world

@@ -12,3 +12,5 @@ jobs:
       run: echo hello world
     - name: python 버전 출력
       run: python -V
+    - name: python 파일 실행
+      run: python 'hello_world.py'

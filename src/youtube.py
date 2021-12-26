@@ -42,9 +42,3 @@ class ChannelAbout:
             
         view = int(result)
         return view
-
-
-if __name__ == '__main__':
-    channels = map(ChannelAbout, ['UCV9WL7sW6_KjanYkUUaIDfQ', 'UCUj6rrhMTR9pipbAWBAMvUQ'])
-    for ch in channels:
-        print(ch.request().parse_view())

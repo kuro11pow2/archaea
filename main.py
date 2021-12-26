@@ -7,7 +7,7 @@ today = str(datetime.now(timezone(timedelta(hours=0))).date())
 target_dir = os.path.join(os.getcwd(), 'data')
 target_full = os.path.join(target_dir, 'youtube.json')
 channels = {
-    '5-Minute Crafts':'5MinuteCraftsYouTube',
+    '5-Minute Crafts':'c/5MinuteCraftsYouTube',
     '침착맨':'UCUj6rrhMTR9pipbAWBAMvUQ'
     }
 

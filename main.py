@@ -24,6 +24,7 @@ except Exception as e:
     data = dict()
 
 for name, id in channels.items():
+    print(f'{name} 조회')
     cnt = ChannelAbout(id).request().parse_view()
 
     if name not in data.keys(): 

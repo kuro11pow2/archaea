@@ -29,7 +29,7 @@ class ChannelAbout:
         target_left, target_right = scripts_str.find('{'), scripts_str.find('}')+1
         target_str = scripts_str[target_left:target_right]
         
-        print('[디버그]', scripts_str, target_str, sep='\n')
+        print('[디버그]', self.res.text, scripts_str, target_str, sep='\n')
 
         dic = json.loads(target_str)
         target = list(dic.values())[0]

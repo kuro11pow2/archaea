@@ -19,18 +19,20 @@ jobs:
         cache-dependency-path: '**/requirements-dev.txt'
     
     - name: 정보 조회
-      run: echo $GITHUB_WORKSPACE
-      run: ls -al
-      run: python -V
+      run: |
+        echo $GITHUB_WORKSPACE
+        ls -al
+        python -V
 
     - name: 환경 설정
-      run: python -m pip install --upgrade pip
-      run: pip install -r requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
     - name: 패키지 확인
       run: pip list
 
-    - name: run
+    - name: run script
       run: python './main.py'
 
     - name: commit

@@ -1,8 +1,8 @@
 name: crawl and push
  
 on:
+  # 매일 오전 7시 32분마다 실행
   schedule:
-    # 매일 오전 7시 32분마다 실행
     - cron: "32 7 * * *"
   # Actions 탭에서 수동 실행이 가능하도록 설정
   workflow_dispatch:
@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        cache: 'pip'
+        python-version: '3.9'
+        cache-dependency-path: '**/requirements-dev.txt'
     
     - name: 정보 조회
       run: echo $GITHUB_WORKSPACE

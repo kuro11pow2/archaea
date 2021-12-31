@@ -1,81 +1,100 @@
 
-(window.onload = function () {
+(function () {
 
-    function getRand(start, size) {
-        return Math.floor(Math.random() * size) + start;
-    }
+    window.onload = function () {
 
-    function getDefaultDataset(bot, top, size) {
-        dataset = {
-            label: 'asdf',
-            borderColor: 'rgb(' + [getRand(50, 200), getRand(50, 200), getRand(50, 200)].join(',') + ')',
-            fill: false,
-            data: []
+        function getRand(start, size) {
+            return Math.floor(Math.random() * size) + start;
         }
 
-        for (let i = 0; i < size; i++)
-            dataset.data.push(getRand(bot, top));
+        function getRandomDataset(bot, top, size) {
+            dataset = getDataset(test, []);
 
-        return dataset;
-    }
+            for (let i = 0; i < size; i++)
+                dataset.data.push(getRand(bot, top));
 
-    function addDataset(data, dataset) {
-        data.datasets.push(dataset);
-    }
+            return dataset;
+        }
 
-    let data = {
-        labels: [1, 2, 3, 4, 5],
-        datasets: []
-    };
+        function getDataset(name, dataArr) {
+            dataset = {
+                label: name,
+                borderColor: 'rgb(' + [getRand(50, 200), getRand(50, 200), getRand(50, 200)].join(',') + ')',
+                fill: false,
+                data: dataArr
+            }
+            return dataset
+        }
 
-    addDataset(data, getDefaultDataset(0, 100, data.labels.length));
-    addDataset(data, getDefaultDataset(0, 100, data.labels.length));
+        function getData(jsondata) {
 
-    const options = {
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                stacked: true,
-                grid: {
-                    display: true,
-                    color: "rgba(255,99,132,0.2)"
-                }
-            },
-            x: {
-                grid: {
-                    display: false
+            let data = {
+                labels: [],
+                datasets: []
+            };
+
+            let allDates = new Set();
+
+            for (const name in jsondata) {
+                for (var date of Object.keys(jsondata[name])) {
+                    allDates.add(date);
                 }
             }
-        },
 
-    };
+            data.labels = Array.from(allDates).slice(1);
 
-    const plugin = {
-        id: 'custom_canvas_background_color',
-        beforeDraw: (chart) => {
-            const ctx = chart.canvas.getContext('2d');
-            ctx.save();
-            ctx.globalCompositeOperation = 'destination-over';
-            ctx.fillStyle = 'ghostwhite';
-            ctx.fillRect(0, 0, chart.width, chart.height);
-            ctx.restore();
+            for (const name in jsondata) {
+
+                let curDates = new Set(Object.keys(jsondata[name]));
+                let dataArr = [];
+
+                allDates.forEach(date => {
+
+                    if (curDates.has(date)) {
+                        dataArr.push(jsondata[name][date]);
+                    }
+                    else {
+                        if (dataArr.length > 0) {
+                            dataArr.push(dataArr[dataArr.length - 1])
+                        }
+                    }
+
+                })
+
+                for (let i = dataArr.length - 1; i > 0; i--) {
+                    dataArr[i] = Math.log10(dataArr[i] - dataArr[i - 1]);
+                }
+
+                let dataset = getDataset(name, dataArr.slice(1));
+                data.datasets.push(dataset);
+            }
+
+            return data;
         }
-    };
 
-    new Chart('chart', {
-        type: 'line',
-        data: data,
-        options: options,
-        plugins: [plugin]
-    });
 
-    if ('file:' == window.location.protocol) {
-    }
-    else {
-        fetch(window.location.pathname.split('/').slice(0, -1).join('/') + '/data/youtube.json')
-            .then(response => {
-                return response.json();
-            })
-            .then(jsondata => console.log(jsondata));
+        if ('file:' == window.location.protocol) {
+        }
+        else {
+            fetch(window.location.pathname.split('/').slice(0, -1).join('/') + '/data/youtube.json')
+                .then(response => {
+                    return response.json();
+                })
+                .then(jsondata => {
+                    data = getData(jsondata);
+
+                    const options = {
+                        maintainAspectRatio: false,
+                    };
+
+                    const config = {
+                        type: 'line',
+                        data: data,
+                        options: options,
+                    }
+
+                    new Chart('chart', config);
+                });
+        }
     }
 })();

@@ -8,7 +8,8 @@
             "2021-12-29": 22127657786,
             "2021-12-30": 22152363140,
             "2021-12-31": 22155065254,
-            "2022-01-01": 22167642414
+            "2022-01-01": 22167642414,
+            "2022-01-02": 22181513290
         }
     },
     "channel/UCUj6rrhMTR9pipbAWBAMvUQ": {
@@ -20,7 +21,62 @@
             "2021-12-29": 845056581,
             "2021-12-30": 846329734,
             "2021-12-31": 848600729,
-            "2022-01-01": 849627779
+            "2022-01-01": 849627779,
+            "2022-01-02": 850853446
+        }
+    },
+    "channel/UC3WZlO2Zl8NE1yIUgtwUtQw": {
+        "name": "임영웅",
+        "viewCounts": {
+            "2022-01-02": 1186320017
+        }
+    },
+    "channel/UC3SyT4_WLHzN7JmHQwKQZww": {
+        "name": "이지금 [IU Official]",
+        "viewCounts": {
+            "2022-01-02": 1214813275
+        }
+    },
+    "channel/UCOp66Vup07X0YziXaaxqs2A": {
+        "name": "haha ha",
+        "viewCounts": {
+            "2022-01-02": 401798028
+        }
+    },
+    "channel/UCzgNzUJkXaUbVgHyiycQ2Zw": {
+        "name": "휘용 Hwiyong",
+        "viewCounts": {
+            "2022-01-02": 21565501
+        }
+    },
+    "channel/UCLKuglhGlMmDteQKoniENIQ": {
+        "name": "14F 일사에프",
+        "viewCounts": {
+            "2022-01-02": 436547657
+        }
+    },
+    "c/BANGTANTV": {
+        "name": "BANGTANTV",
+        "viewCounts": {
+            "2022-01-02": 14513381040
+        }
+    },
+    "c/JFlaMusic": {
+        "name": "JFlaMusic",
+        "viewCounts": {
+            "2022-01-02": 3523145648
+        }
+    },
+    "user/woowakgood": {
+        "name": "우왁굳의 게임방송",
+        "viewCounts": {
+            "2022-01-02": 1126610489
+        }
+    },
+    "channel/UCV9WL7sW6_KjanYkUUaIDfQ": {
+        "name": "고세구 GOSEGU",
+        "viewCounts": {
+            "2022-01-02": 7441937
         }
     }
 }

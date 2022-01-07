@@ -70,12 +70,21 @@
                             else if (viewCountArr.length > 0) {
                                 viewCountArr.push(viewCountArr[viewCountArr.length - 1]);
                             }
+                            else {
+                                viewCountArr.push(0);
+                            }
                         })
 
                         // 날짜 간 조회수 차이에 상용 로그를 담은 배열을 생성 (크기가 -1 됨)
                         let viewCountDiffArr = new Array();
                         for (let i = 0; i < viewCountArr.length - 1; i++) {
-                            viewCountDiffArr.push(Math.log10(viewCountArr[i + 1] - viewCountArr[i]));
+                            if (viewCountArr[i] == 0) {
+                                viewCountDiffArr.push(0);
+                            }
+                            else {
+                                viewCountDiffArr.push(viewCountArr[i + 1] - viewCountArr[i]);
+                            }
+                            viewCountDiffArr[viewCountDiffArr.length-1] = Math.log10(viewCountDiffArr[viewCountDiffArr.length-1]);
                         }
 
                         viewCountsDiffArrMap.set(ch.id, viewCountDiffArr);
@@ -94,6 +103,7 @@
                         let dataset = getDataset(name, dataArr);
                         data.datasets.push(dataset);
                     }
+                    console.log(data);
 
                     // 차트 생성
                     const options = {

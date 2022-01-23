@@ -3,7 +3,7 @@ name: crawl and push
 on:
   # 매일 19시 32분마다 실행
   schedule:
-    - cron: "32 10 * * *"
+    - cron: "32 14 * * *"
   # Actions 탭에서 수동 실행이 가능하도록 설정
   workflow_dispatch:
 

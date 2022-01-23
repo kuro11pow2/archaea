@@ -2,7 +2,7 @@ name: crawl and push
  
 on:
   schedule:
-    - cron: "0 */8 * * *"
+    - cron: "32 14 * * *"
   # Actions 탭에서 수동 실행이 가능하도록 설정
   workflow_dispatch:
 

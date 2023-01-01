@@ -1,6 +1,6 @@
 
 (function () {
-
+    let view_count_path = '/data/youtube_view_count.json';
     window.onload = function () {
 
         function getRandClosed(start, end) {
@@ -29,7 +29,7 @@
         if ('file:' == window.location.protocol) {
         }
         else {
-            fetch(window.location.pathname.split('/').slice(0, -1).join('/') + '/data/youtube.json')
+            fetch(window.location.pathname.split('/').slice(0, -1).join('/') + view_count_path)
                 .then(response => {
                     return response.json();
                 })

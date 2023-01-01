@@ -1,57 +1,90 @@
-from src.youtube import ChannelAbout
+from src.youtube_channel import YoutubeChannel
 
-import os, json
+import os, json, time
 from datetime import datetime, timezone, timedelta
-
-today = str(datetime.now(timezone(timedelta(hours=0))).date())
-target_dir = os.path.join(os.getcwd(), 'data')
-target_full = os.path.join(target_dir, 'youtube.json')
-channels = {
-    # 'c/5MinuteCraftsYouTube':'5-Minute Crafts',
-    # 'channel/UCUj6rrhMTR9pipbAWBAMvUQ':'침착맨',
-    # 'channel/UC3WZlO2Zl8NE1yIUgtwUtQw':'임영웅',
-    # 'channel/UC3SyT4_WLHzN7JmHQwKQZww':'이지금 [IU Official]',
-    # 'channel/UCOp66Vup07X0YziXaaxqs2A':'haha ha',
-    # 'channel/UCzgNzUJkXaUbVgHyiycQ2Zw':'휘용 Hwiyong',
-    # 'channel/UCLKuglhGlMmDteQKoniENIQ':'14F 일사에프',
-    # 'c/BANGTANTV':'BANGTANTV',
-    # 'c/JFlaMusic':'JFlaMusic',
-    'user/woowakgood':'우왁굳의 게임방송',
-    'channel/UCV9WL7sW6_KjanYkUUaIDfQ':'고세구 GOSEGU',
-    '@jingburger':'징버거 JINGBURGER',
-    '@JU_RURU':'주르르 JURURU',
-    '@viichan116':'비챤 VIichan',
-    '@INE_':'아이네 INE',
-    '@lilpa0309':'릴파 lilpa',
-    }
-data = None
-
-if not os.path.exists(target_dir):
-    print('기존 디렉터리가 존재하지 않음.')
-    os.makedirs(target_dir)
-
-try:
-    with open(target_full, 'r', encoding="UTF-8-sig") as f:
-        data = json.JSONDecoder().decode(f.read())
-except Exception as e:
-    print('기존 파일이 존재하지 않음.')
-    data = dict()
-
-for id, name in channels.items():
-
-    print(f'{name} 조회')
-    cnt = ChannelAbout(id).request().parse_view()
-
-    if id not in data.keys(): 
-        data[id] = {'name':name, 'viewCounts':dict()}
-
-    if today not in data[id]['viewCounts'].keys():
-        data[id]['viewCounts'] = {**data[id]['viewCounts'], **{today: cnt}}
-        print(data)
-    else:
-        print(f'{today} 데이터 존재함: {name}, {cnt}')
+import asyncio
 
 
-with open(target_full, "w", encoding="UTF-8-sig") as f_write:
-    json.dump(data, f_write, ensure_ascii=False, indent=4)
+def relative_to_abs_path(relative_path):
+    return os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path))
 
+
+def load_json_data(absolute_path):
+    data = None
+    dirname = os.path.dirname(absolute_path)
+
+    if not os.path.exists(dirname):
+        print('디렉터리가 존재하지 않음.')
+        os.makedirs(dirname)
+
+    try:
+        with open(absolute_path, 'r', encoding="UTF-8-sig") as f:
+            data = json.JSONDecoder().decode(f.read())
+    except FileNotFoundError:
+        print('파일이 존재하지 않음.')
+        data = dict()
+
+    return data
+
+
+async def get_view_count_async(id, name):
+    channel = YoutubeChannel(id, name)
+    s = time.time()
+    print(f'{name} 요청, {s:0.4f}초')
+    # if (name == "고세구 GOSEGU"):
+    #     await asyncio.sleep(1)
+    cnt = await channel.get_view_count_async()
+    e = time.time()
+    print(f'{name} 응답, {e:0.4f}초, {e-s:0.4f}초 소요')
+    return (channel, cnt)
+
+
+async def update_view_count_async(channels, data):
+    today = str(datetime.now(timezone(timedelta(hours=0))).date())
+
+    s = time.time()
+    futures = {get_view_count_async(id, name) for id, name in channels.items()}
+    
+    # res = await asyncio.gather(*futures)
+
+    res = []
+    for future in asyncio.as_completed(futures):
+        channel, cnt = await future
+        id = channel.id
+        name = channel.name
+
+        if id not in data.keys(): 
+            data[id] = {'name':name, 'viewCounts':dict()}
+
+        if today not in data[id]['viewCounts'].keys():
+            data[id]['viewCounts'][today] = cnt
+        else:
+            print(f'{today} 데이터 존재함: {name}, {cnt}')
+
+
+    print(f'전체 조회 {time.time() - s:0.4f}초 소요')
+    return res
+
+
+def update_view_count_data(channels, data):
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(update_view_count_async(channels, data))
+
+
+def save_view_count_data(absolute_path, data):
+    with open(absolute_path, "w", encoding="UTF-8-sig") as f_write:
+        json.dump(data, f_write, ensure_ascii=False, indent=4)
+
+
+def Run():
+    channel_info_path = relative_to_abs_path("data/channel_info.json")
+    youtube_view_count_path = relative_to_abs_path("data/youtube_view_count.json")
+
+    channels = load_json_data(channel_info_path)
+    youtube_view_count = load_json_data(youtube_view_count_path)
+
+    update_view_count_data(channels, youtube_view_count)
+    save_view_count_data(youtube_view_count_path, youtube_view_count)
+
+
+Run()

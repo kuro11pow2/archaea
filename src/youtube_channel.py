@@ -15,12 +15,6 @@ class YoutubeChannel:
         self.__res = None
         self.__view_count = None
 
-    async def get_view_count_async(self, refresh=False):
-        if (self.__res is None or self.__view_count is None or refresh):
-            await self.__request_async()
-            self.__parse()
-        return self.__view_count
-    
     def get_view_count(self, refresh=False):
         if (self.__res is None or self.__view_count is None or refresh):
             # 아래처럼 호출해도 C#의 .Wait() 방식으로 쓰레드가 정지되지는 않는다.
@@ -29,6 +23,12 @@ class YoutubeChannel:
             self.__parse()
         return self.__view_count
 
+    async def get_view_count_async(self, refresh=False):
+        if (self.__res is None or self.__view_count is None or refresh):
+            await self.__request_async()
+            self.__parse()
+        return self.__view_count
+    
     def __request(self):
         self.__res = requests.request("GET", self.url)
 

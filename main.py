@@ -27,6 +27,17 @@ def load_json_data(absolute_path):
     return data
 
 
+def save_json_data(absolute_path, data):
+    dirname = os.path.dirname(absolute_path)
+
+    if not os.path.exists(dirname):
+        print('디렉터리가 존재하지 않음.')
+        os.makedirs(dirname)
+
+    with open(absolute_path, "w", encoding="UTF-8-sig") as f_write:
+        json.dump(data, f_write, ensure_ascii=False, indent=4)
+
+
 async def get_view_count_async(id, name):
     channel = YoutubeChannel(id, name)
     s = time.time()
@@ -71,12 +82,7 @@ def update_view_count_data(channels, data):
     loop.run_until_complete(update_view_count_async(channels, data))
 
 
-def save_view_count_data(absolute_path, data):
-    with open(absolute_path, "w", encoding="UTF-8-sig") as f_write:
-        json.dump(data, f_write, ensure_ascii=False, indent=4)
-
-
-def Run():
+def run():
     channel_info_path = relative_to_abs_path("data/channel_info.json")
     youtube_view_count_path = relative_to_abs_path("data/youtube_view_count.json")
 
@@ -84,7 +90,7 @@ def Run():
     youtube_view_count = load_json_data(youtube_view_count_path)
 
     update_view_count_data(channels, youtube_view_count)
-    save_view_count_data(youtube_view_count_path, youtube_view_count)
+    save_json_data(youtube_view_count_path, youtube_view_count)
 
 
-Run()
+run()

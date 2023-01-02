@@ -3,21 +3,23 @@
     let view_count_path = '/data/youtube_view_count.json';
     window.onload = function () {
 
-        function getRandClosed(start, end) {
-            return Math.floor(Math.random() * (end - start + 1)) + start;
+        function getRand(start, end) {
+            if (start >= end)
+                throw Error("start < end");
+            return Math.floor(Math.random() * (end - start)) + start;
         }
 
         function getDataset(name, dataArr) {
             dataset = {
                 label: name,
-                borderColor: 'rgb(' + [getRandClosed(0, 200), getRandClosed(0, 200), getRandClosed(0, 200)].join(',') + ')',
+                borderColor: 'rgb(' + [getRand(0, 200), getRand(0, 200), getRand(0, 200)].join(',') + ')',
                 fill: false,
                 data: dataArr
             }
             return dataset
         }
 
-        class ChannelAbout {
+        class YoutubeChannel {
             constructor(id, name, viewCountsObj = null) {
                 this.id = id;
                 this.name = name;
@@ -41,7 +43,7 @@
                         let channelAboutJson = channelAboutArrJson[id];
                         let name = channelAboutJson['name'];
                         let viewCountsObj = channelAboutJson['viewCounts'];
-                        channelAboutArr.push(new ChannelAbout(id, name, viewCountsObj))
+                        channelAboutArr.push(new YoutubeChannel(id, name, viewCountsObj))
                     }
                     console.log(channelAboutArr);
 

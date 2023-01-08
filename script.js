@@ -1,32 +1,32 @@
 
 (function () {
-    let view_count_path = '/data/youtube_view_count.json';
+    const view_count_path = '/data/youtube_view_count.json';
+
+    function getRand(start, end) {
+        if (start >= end)
+            throw Error("start < end");
+        return Math.floor(Math.random() * (end - start)) + start;
+    }
+
+    function getDataset(name, dataArr) {
+        dataset = {
+            label: name,
+            borderColor: 'rgb(' + [getRand(0, 200), getRand(0, 200), getRand(0, 200)].join(',') + ')',
+            fill: false,
+            data: dataArr
+        }
+        return dataset
+    }
+
+    class YoutubeChannel {
+        constructor(id, name, viewCountsObj = null) {
+            this.id = id;
+            this.name = name;
+            this.viewCounts = viewCountsObj ? new Map(Object.entries(viewCountsObj)) : new Map();
+        }
+    }
+
     window.onload = function () {
-
-        function getRand(start, end) {
-            if (start >= end)
-                throw Error("start < end");
-            return Math.floor(Math.random() * (end - start)) + start;
-        }
-
-        function getDataset(name, dataArr) {
-            dataset = {
-                label: name,
-                borderColor: 'rgb(' + [getRand(0, 200), getRand(0, 200), getRand(0, 200)].join(',') + ')',
-                fill: false,
-                data: dataArr
-            }
-            return dataset
-        }
-
-        class YoutubeChannel {
-            constructor(id, name, viewCountsObj = null) {
-                this.id = id;
-                this.name = name;
-                this.viewCounts = viewCountsObj ? new Map(Object.entries(viewCountsObj)) : new Map();
-            }
-        }
-
 
         if ('file:' == window.location.protocol) {
         }

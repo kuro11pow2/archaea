@@ -6,14 +6,53 @@ import asyncio
 loop = asyncio.get_event_loop()
 
 
+class YoutubeViewCount:
+    def __init__(self, id=None, name=None, view_counts=None):
+        self.id = id
+        self.name = name
+        self.__view_counts = view_counts if view_counts is not None else dict()
+
+        self.__name_prop_str = "name"
+        self.__view_counts_prop_str = "viewCounts"
+
+    def load_json(self, json_dict):
+        self.id = json_dict[0]
+        self.name = json_dict[1][self.__name_prop_str]
+        self.__view_counts = json_dict[1][self.__view_counts_prop_str]
+
+    def get_dict4json(self):
+        json_dict = dict()
+        json_dict[self.id] = {
+            self.__name_prop_str: self.name,
+            self.__view_counts_prop_str: self.__view_counts
+        }
+        return json_dict
+
+    def add(self, date, cnt):
+        if date not in self.__view_counts.keys():
+            self.__view_counts[date] = cnt
+        else:
+            print(f'{date} 데이터 존재함: {self.name}, {cnt}')
+
+
 class YoutubeChannel:
-    def __init__(self, id, name, category):
+    def __init__(self, id=None, name=None, category=None):
         self.id = id
         self.name = name
         self.category = category
-        self.url = 'https://www.youtube.com/' + id + '/about'
+        self.url = 'https://www.youtube.com/' + self.id + \
+            '/about' if self.id is not None else None
         self.__res = None
         self.__view_count = None
+
+        self.__name_prop_str = "name"
+        self.__category_prop_str = "category"
+
+    def load_json(self, json_dict):
+        self.id = json_dict[0]
+        self.name = json_dict[1][self.__name_prop_str]
+        self.category = json_dict[1][self.__category_prop_str]
+        self.url = 'https://www.youtube.com/' + self.id + '/about'
 
     def get_view_count(self, refresh=False):
         if (self.__res is None or self.__view_count is None or refresh):

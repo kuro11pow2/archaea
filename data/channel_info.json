@@ -1,9 +1,59 @@
 {
-    "user/woowakgood": "우왁굳의 게임방송",
-    "channel/UCV9WL7sW6_KjanYkUUaIDfQ": "고세구 GOSEGU",
-    "@jingburger": "징버거 JINGBURGER",
-    "@JU_RURU": "주르르 JURURU",
-    "@viichan116": "비챤 VIichan",
-    "@INE_": "아이네 INE",
-    "@lilpa0309": "릴파 lilpa"
+    "user/woowakgood": {
+        "name": "우왁굳의 게임방송",
+        "category": [
+            "트위치 스트리머",
+            "우왁굳TV",
+            "왁 엔터테인먼트",
+            "고멤 엔터테인먼트"
+        ]
+    },
+    "channel/UCV9WL7sW6_KjanYkUUaIDfQ": {
+        "name": "고세구 GOSEGU",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    },
+    "@jingburger": {
+        "name": "징버거 JINGBURGER",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    },
+    "@JU_RURU": {
+        "name": "주르르 JURURU",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    },
+    "@viichan116": {
+        "name": "비챤 VIichan",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    },
+    "@INE_": {
+        "name": "아이네 INE",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    },
+    "@lilpa0309": {
+        "name": "릴파 lilpa",
+        "category": [
+            "트위치 스트리머",
+            "왁 엔터테인먼트",
+            "이세계 아이돌"
+        ]
+    }
 }

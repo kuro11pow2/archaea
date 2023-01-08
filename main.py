@@ -1,8 +1,11 @@
-from src.youtube_channel import YoutubeChannel
+from src.youtube import YoutubeChannel
+from typing import List
 
-import os, json, time
-from datetime import datetime, timezone, timedelta
+import time
 import asyncio
+import os
+import json
+from datetime import datetime, timezone, timedelta
 
 
 def relative_to_abs_path(relative_path):
@@ -38,24 +41,23 @@ def save_json_data(absolute_path, data):
         json.dump(data, f_write, ensure_ascii=False, indent=4)
 
 
-async def get_view_count_async(id, name):
-    channel = YoutubeChannel(id, name)
+async def get_view_count_async(channel: YoutubeChannel):
     s = time.time()
-    print(f'{name} 요청, {s:0.4f}초')
+    print(f'{channel.name} 요청, {s:0.4f}초')
     # if (name == "고세구 GOSEGU"):
     #     await asyncio.sleep(1)
     cnt = await channel.get_view_count_async()
     e = time.time()
-    print(f'{name} 응답, {e:0.4f}초, {e-s:0.4f}초 소요')
+    print(f'{channel.name} 응답, {e:0.4f}초, {e-s:0.4f}초 소요')
     return (channel, cnt)
 
 
-async def update_view_count_async(channels, data):
+async def update_view_count_async(channels: List[YoutubeChannel], view_counts):
     today = str(datetime.now(timezone(timedelta(hours=0))).date())
 
     s = time.time()
-    futures = {get_view_count_async(id, name) for id, name in channels.items()}
-    
+    futures = {get_view_count_async(channel) for channel in channels}
+
     # res = await asyncio.gather(*futures)
 
     res = []
@@ -64,29 +66,37 @@ async def update_view_count_async(channels, data):
         id = channel.id
         name = channel.name
 
-        if id not in data.keys(): 
-            data[id] = {'name':name, 'viewCounts':dict()}
+        if id not in view_counts.keys():
+            view_counts[id] = {'name': name, 'viewCounts': dict()}
 
-        if today not in data[id]['viewCounts'].keys():
-            data[id]['viewCounts'][today] = cnt
+        if today not in view_counts[id]['viewCounts'].keys():
+            view_counts[id]['viewCounts'][today] = cnt
         else:
             print(f'{today} 데이터 존재함: {name}, {cnt}')
-
 
     print(f'전체 조회 {time.time() - s:0.4f}초 소요')
     return res
 
 
-def update_view_count_data(channels, data):
+def update_view_count_data(channels: List[YoutubeChannel], view_counts):
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(update_view_count_async(channels, data))
+    loop.run_until_complete(update_view_count_async(channels, view_counts))
+
+
+def load_youtube_channel(relative_path: str) -> List[YoutubeChannel]:
+    channel_info_path = relative_to_abs_path(relative_path)
+    channel_data = load_json_data(channel_info_path)
+
+    channels = [YoutubeChannel(id, prop['name'], prop['category'])
+                for id, prop in channel_data.items()]
+    return channels
 
 
 def run():
-    channel_info_path = relative_to_abs_path("data/channel_info.json")
-    youtube_view_count_path = relative_to_abs_path("data/youtube_view_count.json")
+    channels = load_youtube_channel("data/channel_info.json")
 
-    channels = load_json_data(channel_info_path)
+    youtube_view_count_path = relative_to_abs_path(
+        "data/youtube_view_count.json")
     youtube_view_count = load_json_data(youtube_view_count_path)
 
     update_view_count_data(channels, youtube_view_count)

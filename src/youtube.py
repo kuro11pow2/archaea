@@ -3,14 +3,14 @@ import json
 from bs4 import BeautifulSoup
 import asyncio
 
- 
 loop = asyncio.get_event_loop()
 
-class YoutubeChannel:
 
-    def __init__(self, id, name):
+class YoutubeChannel:
+    def __init__(self, id, name, category):
         self.id = id
         self.name = name
+        self.category = category
         self.url = 'https://www.youtube.com/' + id + '/about'
         self.__res = None
         self.__view_count = None
@@ -28,7 +28,7 @@ class YoutubeChannel:
             await self.__request_async()
             self.__parse()
         return self.__view_count
-    
+
     def __request(self):
         self.__res = requests.request("GET", self.url)
 
@@ -40,7 +40,7 @@ class YoutubeChannel:
 
         if self.__res.status_code != 200:
             raise Exception(f'요청 실패. 응답 코드 {self.__res.status_code}')
-    
+
     def __parse(self):
         if self.__res is None:
             raise Exception('request 먼저 수행')
@@ -53,7 +53,8 @@ class YoutubeChannel:
         target_pos = scripts_str.find('viewCountText')
         scripts_str = scripts_str[target_pos:target_pos+100]
 
-        target_left, target_right = scripts_str.find('{'), scripts_str.find('}')+1
+        target_left, target_right = scripts_str.find(
+            '{'), scripts_str.find('}')+1
         target_str = scripts_str[target_left:target_right]
 
         dic = json.loads(target_str)
@@ -67,5 +68,5 @@ class YoutubeChannel:
                 pass
             else:
                 result += i
-            
+
         self.__view_count = int(result)

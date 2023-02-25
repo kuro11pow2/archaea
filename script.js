@@ -1,6 +1,8 @@
 
 (function () {
     const view_count_path = '/data/youtube_view_count.json';
+    const channel_info_path = '/data/channel_info.json';
+    const period = 20;
 
     function getRand(start, end) {
         if (start >= end)
@@ -19,11 +21,209 @@
     }
 
     class YoutubeChannel {
-        constructor(id, name, viewCountsObj = null) {
+        constructor(id, name, categories, viewCountsObj = null) {
             this.id = id;
             this.name = name;
+            this.categories = categories;
             this.viewCounts = viewCountsObj ? new Map(Object.entries(viewCountsObj)) : new Map();
         }
+    }
+
+    function getYoutubeChannels(ViewJson, InfoJson) {
+        let youtubeChannels = new Array();
+
+        for (const id in ViewJson) {
+            let channelAboutJson = ViewJson[id];
+            let name = channelAboutJson['name'];
+            let categories = new Set(InfoJson[id]['categories']);
+            let viewCountsObj = channelAboutJson['viewCounts'];
+            youtubeChannels.push(new YoutubeChannel(id, name, categories, viewCountsObj));
+        }
+
+        return youtubeChannels;
+    }
+
+    function getDates(youtubeChannels) {
+        let dates = new Set();
+
+        for (let channelAbout of youtubeChannels) {
+            let rawDates = channelAbout.viewCounts.keys();
+
+            for (let date of rawDates) {
+                dates.add(date);
+            }
+        }
+
+        return dates
+    }
+
+    function getInterpolateViewCountByDate(youtubeChannel, dateSet) {
+        let viewCountByDate = new Array();
+        dateSet.forEach(date => {
+            // 데이터가 누락된 경우 전날의 데이터를 사용하도록 함
+            if (youtubeChannel.viewCounts.has(date)) {
+                viewCountByDate.push(youtubeChannel.viewCounts.get(date));
+            }
+            else if (viewCountByDate.length > 0) {
+                viewCountByDate.push(viewCountByDate[viewCountByDate.length - 1]);
+            }
+            else {
+                viewCountByDate.push(0);
+            }
+        })
+        return viewCountByDate;
+    }
+
+    function getDiscreteDerivatives(arr) {
+        let ret = new Array();
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i] === 0) {
+                ret.push(0);
+            }
+            else if (arr[i - 1] === 0) {
+                ret.push(0);
+            }
+            else {
+                let diff = arr[i] - arr[i - 1];
+                ret.push(Math.max(0, diff));
+            }
+        }
+        return ret;
+    }
+
+    function getMovingAverage(arr, period = 1) {
+        let movingAvg = new Array();
+
+        let firstNonZeroIdx = undefined;
+        let sum = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (firstNonZeroIdx === undefined) {
+                if (arr[i] === 0) {
+                    movingAvg.push(0);
+                    continue;
+                }
+                else {
+                    firstNonZeroIdx = i;
+                }
+            }
+            sum += arr[i];
+
+            if (i < period - 1) {
+                movingAvg.push(0);
+                continue;
+            }
+
+            let divisor;
+            if (i - firstNonZeroIdx < period) {
+                divisor = i - firstNonZeroIdx + 1;
+            }
+            else {
+                divisor = period;
+                sum -= arr[i - period];
+            }
+            movingAvg.push(sum / divisor);
+        }
+
+        return movingAvg;
+    }
+
+    function getComputeViewDeltasByDate(youtubeChannel, dateSet) {
+        if (youtubeChannel.name === "HAKU0089")
+            console.log("asd");
+
+        let viewCountByDate = getInterpolateViewCountByDate(youtubeChannel, dateSet);
+
+        // 날짜 간 조회수 차이 계산
+        // 길이가 -1 주의
+        let viewCountDiffArr = getDiscreteDerivatives(viewCountByDate);
+
+        // 이동 평균 계산
+        let viewCountDiffMovingAvg = getMovingAverage(viewCountDiffArr, period);
+
+        for (let i = 0; i < viewCountDiffMovingAvg.length; i++) {
+            viewCountDiffMovingAvg[i] = Math.log10(viewCountDiffMovingAvg[i]);
+        }
+
+        return viewCountDiffMovingAvg;
+    }
+
+    function getComputeViewDeltasByDateByChannel(youtubeChannels, dateSet) {
+        let viewDeltasByDate = new Map();
+        for (let youtubeChannel of youtubeChannels) {
+            let viewCountDiffArr = getComputeViewDeltasByDate(youtubeChannel, dateSet);
+            viewDeltasByDate.set(youtubeChannel.id, viewCountDiffArr);
+        }
+        return viewDeltasByDate;
+    }
+
+    function getChartData(youtubeChannels, dateSet, viewDeltasByDate) {
+        // 차트에 전달할 형태로 데이터 변환
+        let chartData = {
+            labels: Array.from(dateSet).slice(period+1), // viewDeltasByDate의 개수가 1개 적다.
+            datasets: new Array()
+        };
+
+        for (let ch of youtubeChannels) {
+            let name = ch.name;
+            let dataArr = viewDeltasByDate.get(ch.id).slice(period);
+            let dataset = getDataset(name, dataArr);
+            chartData.datasets.push(dataset);
+        }
+        return chartData;
+    }
+
+    function DrawChart(youtubeChannels, chartData) {
+        // 차트 생성
+        const options = {
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                    }
+                }
+            }
+        };
+
+        const config = {
+            type: 'line',
+            data: chartData,
+            options: options,
+        }
+
+        let chart = new Chart('chart', config);
+        chart.data.datasets.forEach(function (ds) {
+            function findYoutubeChannel(name) {
+                return youtubeChannels.filter(ch => ch.name === name)[0];
+            }
+            let name = ds.label;
+            let ch = findYoutubeChannel(name);
+            if (ch.categories.has("이세계 아이돌")) {
+                return;
+            }
+            ds.hidden = !ds.hidden;
+        });
+        chart.update();
+    }
+
+    function run(youtubeChannelViewJson, youtubeChannelInfoJson) {
+        // 유튜브 뷰 데이터 로딩
+        let youtubeChannels = getYoutubeChannels(youtubeChannelViewJson, youtubeChannelInfoJson);
+        console.log(youtubeChannels);
+
+        // 기록된 모든 날짜 구하기
+        let dateSet = getDates(youtubeChannels);
+        console.log(dateSet);
+
+        // 각 채널에 대하여 출력할 데이터를 계산 (배열 길이 1 감소됨)
+        let viewDeltasByDate = getComputeViewDeltasByDateByChannel(youtubeChannels, dateSet);
+        console.log(viewDeltasByDate);
+
+        // Chart 데이터 형식으로 가공
+        let chartData = getChartData(youtubeChannels, dateSet, viewDeltasByDate);
+        console.log(chartData);
+
+        DrawChart(youtubeChannels, chartData);
     }
 
     window.onload = function () {
@@ -31,94 +231,23 @@
         if ('file:' == window.location.protocol) {
         }
         else {
-            fetch(window.location.pathname.split('/').slice(0, -1).join('/') + view_count_path)
+            async function fetchYoutubeData() {
+                let viewProm = fetch(window.location.pathname.split('/').slice(0, -1).join('/') + view_count_path);
+                let infoProm = fetch(window.location.pathname.split('/').slice(0, -1).join('/') + channel_info_path);
+                let viewRes = await viewProm;
+                let infoRes = await infoProm;
+                if (viewRes.ok && infoRes.ok) {
+                    let viewData = await viewRes.json();
+                    let infoData = await infoRes.json();
+                    return [viewData, infoData];
+                }
+                else
+                    console.log("채널 데이터 파일 읽어오기 실패");
+            }
+
+            fetchYoutubeData()
                 .then(response => {
-                    return response.json();
-                })
-                .then(channelAboutArrJson => {
-
-                    let channelAboutArr = new Array();
-
-                    for (const id in channelAboutArrJson) {
-                        let channelAboutJson = channelAboutArrJson[id];
-                        let name = channelAboutJson['name'];
-                        let viewCountsObj = channelAboutJson['viewCounts'];
-                        channelAboutArr.push(new YoutubeChannel(id, name, viewCountsObj))
-                    }
-                    console.log(channelAboutArr);
-
-                    // 출력할 모든 날짜 집합 구하기
-                    let allDateSet = new Set();
-
-                    for (let channelAbout of channelAboutArr) {
-                        let dates = channelAbout.viewCounts.keys();
-
-                        for (let date of dates) {
-                            allDateSet.add(date);
-                        }
-                    }
-                    console.log(allDateSet);
-
-                    // 각 채널에 대하여 출력할 데이터를 계산
-                    let viewCountsDiffArrMap = new Map();
-                    for (let ch of channelAboutArr) {
-
-                        // 출력해야 하는 날인데 데이터가 누락된 경우 전날의 데이터를 사용하도록 함
-                        let viewCountArr = new Array();
-                        allDateSet.forEach(date => {
-                            if (ch.viewCounts.has(date)) {
-                                viewCountArr.push(ch.viewCounts.get(date));
-                            }
-                            else if (viewCountArr.length > 0) {
-                                viewCountArr.push(viewCountArr[viewCountArr.length - 1]);
-                            }
-                            else {
-                                viewCountArr.push(0);
-                            }
-                        })
-
-                        // 날짜 간 조회수 차이에 상용 로그를 담은 배열을 생성 (크기가 -1 됨)
-                        let viewCountDiffArr = new Array();
-                        for (let i = 0; i < viewCountArr.length - 1; i++) {
-                            if (viewCountArr[i] == 0) {
-                                viewCountDiffArr.push(0);
-                            }
-                            else {
-                                viewCountDiffArr.push(viewCountArr[i + 1] - viewCountArr[i]);
-                            }
-                            viewCountDiffArr[viewCountDiffArr.length-1] = Math.log10(viewCountDiffArr[viewCountDiffArr.length-1]);
-                        }
-
-                        viewCountsDiffArrMap.set(ch.id, viewCountDiffArr);
-                    }
-                    console.log(viewCountsDiffArrMap);
-
-                    // 차트에 전달할 형태로 데이터 변환
-                    let data = {
-                        labels: Array.from(allDateSet).slice(1),
-                        datasets: new Array()
-                    };
-
-                    for (let ch of channelAboutArr) {
-                        let name = ch.name;
-                        let dataArr = viewCountsDiffArrMap.get(ch.id);
-                        let dataset = getDataset(name, dataArr);
-                        data.datasets.push(dataset);
-                    }
-                    console.log(data);
-
-                    // 차트 생성
-                    const options = {
-                        maintainAspectRatio: false,
-                    };
-
-                    const config = {
-                        type: 'line',
-                        data: data,
-                        options: options,
-                    }
-
-                    new Chart('chart', config);
+                    run(...response);
                 });
         }
     }

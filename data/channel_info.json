@@ -1,7 +1,7 @@
 {
     "channel/UCBkyj16n2snkRg1BAzpovXQ": {
         "name": "우왁굳의 게임방송",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "우왁굳TV",
             "왁 엔터테인먼트",
@@ -10,7 +10,7 @@
     },
     "channel/UCzh4yY8rl38knH33XpNqXbQ": {
         "name": "왁타버스 WAKTAVERSE",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "우왁굳TV",
             "왁 엔터테인먼트",
@@ -19,7 +19,7 @@
     },
     "channel/UChCqDNXQddSr0ncjs_78duA": {
         "name": "우왁굳의 계륵",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "우왁굳TV",
             "왁 엔터테인먼트",
@@ -28,7 +28,7 @@
     },
     "channel/UCZOcwheypMvYN_J2oRBgt2A": {
         "name": "우왁굳의 돚거",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "우왁굳TV",
             "왁 엔터테인먼트",
@@ -37,7 +37,7 @@
     },
     "channel/UCV9WL7sW6_KjanYkUUaIDfQ": {
         "name": "고세구 GOSEGU",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -45,7 +45,7 @@
     },
     "channel/UCHE7GBQVtdh-c1m3tjFdevQ": {
         "name": "징버거 JINGBURGER",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -53,7 +53,7 @@
     },
     "channel/UCTifMx1ONpElK5x6B4ng8eg": {
         "name": "주르르 JURURU",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -61,7 +61,7 @@
     },
     "channel/UCs6EwgxKLY9GG4QNUrP5hoQ": {
         "name": "비챤 VIichan",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -69,7 +69,7 @@
     },
     "channel/UCroM00J2ahCN6k-0-oAiDxg": {
         "name": "아이네 INE",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -77,7 +77,7 @@
     },
     "channel/UC-oCJP9t47v7-DmsnmXV38Q": {
         "name": "릴파 lilpa",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "왁 엔터테인먼트",
             "이세계 아이돌"
@@ -85,133 +85,133 @@
     },
     "channel/UCj_tIjTX97Epp_nRcdUOguQ": {
         "name": "HAKU0089",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCmUYh_arTPJ5nnW80TJq52Q": {
         "name": "이덕수할아바이",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCX-m6izOAFtsMKoEHdAnWJQ": {
         "name": "카르나르 융터르",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UC8x1D7iAfnUFYk0FcwW_jkw": {
         "name": "프리터 Freeter",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UC4Ii4PLOKq6brSfF6botIWA": {
         "name": "독고혜지",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCyYZDwrnW694s6ofzplgRnw": {
         "name": "비밀소녀",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCSWG-hKh0u9tFCoZMRfCfuA": {
         "name": "뢴트게늄",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCY30iJOT0k5pmoCfHvpMw5w": {
         "name": "히키킹 Hiki King",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCCInk1cYisZCc3PG4rAfPmQ": {
         "name": "루석",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UC9A98B_w26Ud1VkUfk18D5w": {
         "name": "왁파고",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCNGOf8bSMnptcQl7aCGYKPA": {
         "name": "김치만두번영택사스가",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCq0fpz99fngNx1KFloh8p0A": {
         "name": "도파민박사",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCFfEKywQ1L2cOjqgxq-zYPA": {
         "name": "풍신",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UC48oiqE8cdkle88MwHuSlyw": {
         "name": "비즈니스킴",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCaBUW112KhOa6KQR_uLWdUQ": {
         "name": "새우튀김의 취미 생활",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCWG4KinKgHcURLVaTzjCDOQ": {
         "name": "권민",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCL6FpO3TH3oF_RpPsezrR_Q": {
         "name": "곽춘식",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCCf6n1qmy8Z7VHTK2X9KjtQ": {
         "name": "단답벌레",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]
     },
     "channel/UCvu4hozlxAk4r51McWOxTLA": {
         "name": "소피아",
-        "category": [
+        "categories": [
             "트위치 스트리머",
             "고멤 엔터테인먼트"
         ]

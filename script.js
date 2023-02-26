@@ -128,9 +128,6 @@
     }
 
     function getComputeViewDeltasByDate(youtubeChannel, dateSet) {
-        if (youtubeChannel.name === "HAKU0089")
-            console.log("asd");
-
         let viewCountByDate = getInterpolateViewCountByDate(youtubeChannel, dateSet);
 
         // 날짜 간 조회수 차이 계산

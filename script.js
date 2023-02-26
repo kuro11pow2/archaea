@@ -1,4 +1,3 @@
-
 (function () {
     const view_count_path = '/data/youtube_view_count.json';
     const channel_info_path = '/data/channel_info.json';
@@ -54,12 +53,13 @@
             }
         }
 
-        return dates
+        return Array.from(dates).sort();
     }
 
-    function getInterpolateViewCountByDate(youtubeChannel, dateSet) {
+    function getInterpolateViewCountByDate(youtubeChannel, dates) {
         let viewCountByDate = new Array();
-        dateSet.forEach(date => {
+
+        dates.forEach(date => {
             // 데이터가 누락된 경우 전날의 데이터를 사용하도록 함
             if (youtubeChannel.viewCounts.has(date)) {
                 viewCountByDate.push(youtubeChannel.viewCounts.get(date));
@@ -106,29 +106,23 @@
                     firstNonZeroIdx = i;
                 }
             }
+
             sum += arr[i];
 
-            if (i < period - 1) {
+            if (i < period + firstNonZeroIdx) {
                 movingAvg.push(0);
-                continue;
-            }
-
-            let divisor;
-            if (i - firstNonZeroIdx < period) {
-                divisor = i - firstNonZeroIdx + 1;
             }
             else {
-                divisor = period;
                 sum -= arr[i - period];
+                movingAvg.push(sum / period);
             }
-            movingAvg.push(sum / divisor);
         }
 
         return movingAvg;
     }
 
-    function getComputeViewDeltasByDate(youtubeChannel, dateSet) {
-        let viewCountByDate = getInterpolateViewCountByDate(youtubeChannel, dateSet);
+    function getDataByDate(youtubeChannel, dates) {
+        let viewCountByDate = getInterpolateViewCountByDate(youtubeChannel, dates);
 
         // 날짜 간 조회수 차이 계산
         // 길이가 -1 주의
@@ -144,19 +138,19 @@
         return viewCountDiffMovingAvg;
     }
 
-    function getComputeViewDeltasByDateByChannel(youtubeChannels, dateSet) {
-        let viewDeltasByDate = new Map();
+    function getDataByDateByChannel(youtubeChannels, dates) {
+        let dataByDateByChannel = new Map();
         for (let youtubeChannel of youtubeChannels) {
-            let viewCountDiffArr = getComputeViewDeltasByDate(youtubeChannel, dateSet);
-            viewDeltasByDate.set(youtubeChannel.id, viewCountDiffArr);
+            let dataByDate = getDataByDate(youtubeChannel, dates);
+            dataByDateByChannel.set(youtubeChannel.id, dataByDate);
         }
-        return viewDeltasByDate;
+        return dataByDateByChannel;
     }
 
-    function getChartData(youtubeChannels, dateSet, viewDeltasByDate) {
+    function getChartData(youtubeChannels, dates, viewDeltasByDate) {
         // 차트에 전달할 형태로 데이터 변환
         let chartData = {
-            labels: Array.from(dateSet).slice(period+1), // viewDeltasByDate의 개수가 1개 적다.
+            labels: dates.slice(period+1), // viewDeltasByDate의 개수가 1개 적다.
             datasets: new Array()
         };
 
@@ -209,15 +203,15 @@
         console.log(youtubeChannels);
 
         // 기록된 모든 날짜 구하기
-        let dateSet = getDates(youtubeChannels);
-        console.log(dateSet);
+        let dates = getDates(youtubeChannels);
+        console.log(dates);
 
         // 각 채널에 대하여 출력할 데이터를 계산 (배열 길이 1 감소됨)
-        let viewDeltasByDate = getComputeViewDeltasByDateByChannel(youtubeChannels, dateSet);
+        let viewDeltasByDate = getDataByDateByChannel(youtubeChannels, dates);
         console.log(viewDeltasByDate);
 
         // Chart 데이터 형식으로 가공
-        let chartData = getChartData(youtubeChannels, dateSet, viewDeltasByDate);
+        let chartData = getChartData(youtubeChannels, dates, viewDeltasByDate);
         console.log(chartData);
 
         DrawChart(youtubeChannels, chartData);

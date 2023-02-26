@@ -60,7 +60,6 @@ async def update_view_count_async(channels: List[YoutubeChannel], view_counts: D
 
     # res = await asyncio.gather(*futures)
 
-    res = []
     for future in asyncio.as_completed(futures):
         channel, cnt = await future
 
@@ -71,7 +70,6 @@ async def update_view_count_async(channels: List[YoutubeChannel], view_counts: D
         view_counts[channel.id].add(today, cnt)
 
     print(f'전체 조회 {time.time() - s:0.4f}초 소요')
-    return res
 
 
 def update_view_count_data(channels: List[YoutubeChannel], view_counts: Dict[str, YoutubeViewCount]):

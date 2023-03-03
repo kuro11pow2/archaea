@@ -46,7 +46,7 @@ class YoutubeChannel:
         self.__view_count = None
 
         self.__name_prop_str = "name"
-        self.__category_prop_str = "category"
+        self.__category_prop_str = "categories"
 
     def load_json(self, json_dict):
         self.id = json_dict[0]

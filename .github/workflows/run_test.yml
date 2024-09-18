@@ -1,8 +1,8 @@
 name: crawl and push
- 
+
 on:
-  # schedule:
-  #  - cron: "32 14 * * *"
+  schedule:
+    - cron: "32 14 * * *"
   # Actions 탭에서 수동 실행이 가능하도록 설정
   workflow_dispatch:
 
@@ -10,38 +10,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-        cache-dependency-path: './requirements.txt'
-    
-    # - name: 정보 조회
-    #   run: |
-    #     echo $GITHUB_WORKSPACE
-    #     ls -al
-    #     python -V
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "./requirements.txt"
 
-    - name: 환경 설정
-      run: |
-        pip install -r requirements.txt
+      # - name: 정보 조회
+      #   run: |
+      #     echo $GITHUB_WORKSPACE
+      #     ls -al
+      #     python -V
 
-    # - name: 패키지 확인
-    #   run: pip list
+      - name: 환경 설정
+        run: |
+          pip install -r requirements.txt
 
-    - name: run script
-      run: python './main.py'
+      # - name: 패키지 확인
+      #   run: pip list
 
-    - name: commit
-      run: |
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git commit -am "데이터 추가"
+      - name: run script
+        run: python './main.py'
 
-    - name: push
-      uses: ad-m/github-push-action@master
-      with:
-        branch: "main"
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: commit
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -am "데이터 추가"
 
+      - name: push
+        uses: ad-m/github-push-action@master
+        with:
+          branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}

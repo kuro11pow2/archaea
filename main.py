@@ -5,6 +5,7 @@ import time
 import asyncio
 import os
 import json
+import random
 from datetime import datetime, timezone, timedelta
 
 
@@ -54,20 +55,28 @@ async def get_view_count_async(channel: YoutubeChannel):
 
 async def update_view_count_async(channels: List[YoutubeChannel], view_counts: Dict[str, YoutubeViewCount]):
     today = str(datetime.now(timezone(timedelta(hours=0))).date())
-
+    
     s = time.time()
-    futures = [get_view_count_async(channel) for channel in channels]
 
-    # res = await asyncio.gather(*futures)
+    batch_size = 5
+    random_min_sec = 3
+    random_max_sec = 10
 
-    for future in asyncio.as_completed(futures):
-        channel, cnt = await future
+    for i in range(0, len(channels), batch_size):
+        batch_channels = channels[i:i + batch_size]
+        futures = [get_view_count_async(channel) for channel in batch_channels]
 
-        if channel.id not in view_counts.keys():
-            view_counts[channel.id] = YoutubeViewCount(
-                channel.id, channel.name)
+        for future in asyncio.as_completed(futures):
+            channel, cnt = await future
 
-        view_counts[channel.id].add(today, cnt)
+            if channel.id not in view_counts.keys():
+                view_counts[channel.id] = YoutubeViewCount(channel.id, channel.name)
+
+            view_counts[channel.id].add(today, cnt)
+
+        delay = random.uniform(random_min_sec, random_max_sec)
+        print(f'{delay:.2f}초 딜레이 후 다음 배치 처리...')
+        await asyncio.sleep(delay)
 
     print(f'전체 조회 {time.time() - s:0.4f}초 소요')
 

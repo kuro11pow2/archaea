@@ -90,7 +90,8 @@ class YoutubeChannel:
         # 모든 "viewCountText":"조회수" 패턴을 찾아서 조회수 부분만 추출
         matches = re.findall(r'"viewCountText":"조회수 ([\d,]+)회"', res_text)
         if not matches:
-            raise Exception('"viewCountText" 또는 "조회수"를 찾을 수 없습니다.')
+            print('"viewCountText" 또는 "조회수"를 찾을 수 없습니다.')
+            return
 
         # 마지막 조회수를 가져옴
         last_view_count_str = matches[-1].replace(',', '')

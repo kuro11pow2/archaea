@@ -69,6 +69,11 @@ async def update_view_count_async(channels: List[YoutubeChannel], view_counts: D
         for future in asyncio.as_completed(futures):
             channel, cnt = await future
 
+            # cnt가 None인 경우 제외
+            if cnt is None:
+                print(f"{(channel.id, channel.name)}의 조회수 값이 None이므로 제외.")
+                continue
+
             if channel.id not in view_counts.keys():
                 view_counts[channel.id] = YoutubeViewCount(channel.id, channel.name)
 

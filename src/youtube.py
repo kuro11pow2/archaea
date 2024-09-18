@@ -1,7 +1,7 @@
 import requests
-import json
-from bs4 import BeautifulSoup
 import asyncio
+import re
+
 
 loop = asyncio.get_event_loop()
 
@@ -84,28 +84,19 @@ class YoutubeChannel:
         if self.__res is None:
             raise Exception('request 먼저 수행')
 
-        soup = BeautifulSoup(self.__res.text, "html.parser")
-        body = soup.find_all("body")[0]
-        scripts = body.find_all("script")
+        # 응답 텍스트에서 "viewCountText":"조회수" 패턴을 모두 검색
+        res_text = self.__res.text
 
-        scripts_str = '\n\n'.join(map(str, scripts))
-        target_pos = scripts_str.find('viewCountText')
-        scripts_str = scripts_str[target_pos:target_pos+100]
+        # 모든 "viewCountText":"조회수" 패턴을 찾아서 조회수 부분만 추출
+        matches = re.findall(r'"viewCountText":"조회수 ([\d,]+)회"', res_text)
+        if not matches:
+            raise Exception('"viewCountText" 또는 "조회수"를 찾을 수 없습니다.')
 
-        target_left, target_right = scripts_str.find(
-            '{'), scripts_str.find('}')+1
-        target_str = scripts_str[target_left:target_right]
+        # 마지막 조회수를 가져옴
+        last_view_count_str = matches[-1].replace(',', '')
+        last_view_count = int(last_view_count_str)
 
-        dic = json.loads(target_str)
-        target = list(dic.values())[0]
+        print(f"마지막 파싱된 조회수: {last_view_count}")
 
-        result = ''
-        for i in target:
-            try:
-                int(i)
-            except:
-                pass
-            else:
-                result += i
-
-        self.__view_count = int(result)
+        # self.__view_count에 저장
+        self.__view_count = last_view_count
